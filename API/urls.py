@@ -4,7 +4,8 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 urlpatterns = [
-    #path('', views.list_news, name='home'),
+    path('api/auth/registration', views.registration, name='registration'),
+    path('api/auth/login', views.login, name='login'),
 ]
 
 # включаем возможность обработки картинок
