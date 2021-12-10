@@ -1,5 +1,6 @@
-import json
 
+import requests
+import datetime
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from django.http import HttpResponse, JsonResponse
@@ -12,9 +13,10 @@ from django.forms.models import model_to_dict
 from django.core import serializers
 import json
 
+from .constant.ApiUrl import ApiUrl
 from .constant.ErrorMessages import ErrorMessages
 from .constant.JsonKey import JsonKey
-from .models import UserProfile, Error, Countries, Histories
+from .models import UserProfile, Error, Countries, Histories, Types, Fact
 
 
 @csrf_exempt
@@ -233,6 +235,51 @@ def delete_histories(request, user_profile_id, history_id):
     history.delete()
 
     return HttpResponse(status=status.HTTP_200_OK)
+
+@csrf_exempt
+@api_view(['GET'])
+def get_random_fact(request, user_profile_id, type):
+    errors = Error()
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    if (type == None or len(Types.objects.filter(en_title = type)) == 0):
+        errors.append(ErrorMessages.GET_RANDOM_TYPES_NOT_FOUND)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
+
+    user = UserProfile.objects.get(id=user_profile_id)
+
+    urlList = {
+        'trivia': ApiUrl.RANDOM_TRIVIA,
+        'year': ApiUrl.RANDOM_YEAR,
+        'date': ApiUrl.RANDOM_DATE,
+        'math': ApiUrl.RANDOM_MATH,
+    }
+
+    response = requests.get(headers=headers, url=urlList[type])
+    print(response.text)
+    obj = json.loads(response.text)
+
+    type = Types.objects.get(en_title=obj["type"])
+    fact = Fact(number=obj["number"], text=obj["text"], type=type)
+
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    history = Histories.objects.create(user=user, type=type, date=date, number=fact.number, description=fact.text)
+    history.save()
+
+    data = {
+        JsonKey.Fact.NUMBER: fact.number,
+        JsonKey.Fact.TEXT: fact.text,
+        JsonKey.Fact.TYPE: {
+            JsonKey.Types.ID: type.id,
+            JsonKey.Types.RU_TITLE: type.ru_title,
+            JsonKey.Types.EN_TITLE: type.en_title
+        }
+    }
+
+    return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
 
 
 

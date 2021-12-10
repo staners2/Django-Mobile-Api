@@ -10,3 +10,5 @@ class ErrorMessages(object):
 
     HISTORIES_NOT_FOUND = "У данного пользователя отсутствует история"
     HISTORY_NOT_FOUND = "Записи о данной истории больше не существует"
+
+    GET_RANDOM_TYPES_NOT_FOUND = "Указанного типа не существует"

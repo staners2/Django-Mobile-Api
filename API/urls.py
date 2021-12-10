@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/userprofile/<int:user_profile_id>/country', views.update_country, name="update_country"),
     path('api/userprofile/<int:user_profile_id>/histories', views.show_histories, name="show_histories"),
     path('api/userprofile/<int:user_profile_id>/histories/<int:history_id>', views.delete_histories, name="delete_histories"),
+    path('api/userprofile/<int:user_profile_id>/random/<str:type>', views.get_random_fact, name="get_random_fact"),
 ]
 
 # включаем возможность обработки картинок
