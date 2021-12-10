@@ -7,7 +7,8 @@ urlpatterns = [
     path('api/auth/registration', views.registration, name='registration'),
     path('api/auth/login', views.login, name='login'),
     path('api/countries', views.get_all_countries, name="get_all_countries"),
-    path('api/countries/<int:id>', views.get_country, name="get_country")
+    path('api/countries/<int:id>', views.get_country, name="get_country"),
+    path('api/userprofile/<int:user_profile_id>/country', views.update_country, name="update_country")
 ]
 
 # включаем возможность обработки картинок

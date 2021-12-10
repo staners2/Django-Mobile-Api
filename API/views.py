@@ -129,7 +129,6 @@ def get_all_countries(request):
 def get_country(request, id):
     country = Countries.objects.get(id=id)
 
-
     data = {
         JsonKey.Countries.ID: country.id,
         JsonKey.Countries.TITLE: country.title,
@@ -137,5 +136,42 @@ def get_country(request, id):
     }
 
     print(data)
+
+    return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
+
+@csrf_exempt
+@api_view(['PUT'])
+def update_country(request, user_profile_id):
+    params = JSONParser().parse(request)
+    print(params)
+    country_id = params.get(JsonKey.Countries.ID)
+    errors = Error()
+
+    if (country_id == None):
+        errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        country = Countries.objects.get(id=country_id)
+        print("NOT ERROR EXIST")
+    except Countries.DoesNotExist:
+        errors.append(ErrorMessages.COUNTRIES_NOT_FOUND)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
+
+
+    user = UserProfile.objects.get(id=user_profile_id)
+    user.country = country
+    user.save()
+
+    data = {
+        JsonKey.UserProfile.ID: user.id,
+        JsonKey.UserProfile.LOGIN: user.login,
+        JsonKey.UserProfile.PASSWORD: user.password,
+        JsonKey.UserProfile.COUNTRY: {
+            JsonKey.Countries.ID: user.country.id,
+            JsonKey.Countries.TITLE: user.country.title,
+            JsonKey.Countries.PREFIX: user.country.prefix
+        }
+    }
 
     return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
