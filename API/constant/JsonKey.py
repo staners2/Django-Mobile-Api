@@ -31,3 +31,8 @@ class JsonKey(object):
 
         USER = "user"
         TYPE = "type"
+
+    class Fact(object):
+        NUMBER = "number"
+        TEXT = "text"
+        TYPE = "type"
