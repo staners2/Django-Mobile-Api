@@ -25,6 +25,7 @@ class Histories(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(UserProfile, null=True, on_delete=models.SET_NULL, db_constraint=False)
     type = models.ForeignKey(Types, null=True, on_delete=models.SET_NULL, db_constraint=False)
+    number = models.IntegerField(null=True)
     date = models.DateTimeField()
     description = models.TextField(null=True)
 
@@ -36,3 +37,13 @@ class Error():
 
     def append(self, message):
         self.messages.append(message)
+
+class Fact():
+    number = None
+    text = None
+    type = None
+
+    def __init__(self, number, text, type):
+        self.number = number
+        self.text = text
+        self.type = type
