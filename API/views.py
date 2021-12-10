@@ -23,8 +23,8 @@ def registration(request):
     print(params)
     login = params.get('login')
     password = params.get('password')
-    country_id = params.get('country')
-    country = Countries.objects.get(id=country_id)
+    country_id = params.get('country_id')
+
     errors = Error()
 
     if request.method == 'GET':
@@ -35,6 +35,12 @@ def registration(request):
 
     elif request.method == 'POST':
         print("POST")
+
+        if (login == None or password == None or country_id == None):
+            errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
+            return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+        country = Countries.objects.get(id=country_id)
 
         try:
             UserProfile.objects.get(login=login, password=password)
@@ -52,7 +58,11 @@ def registration(request):
             JsonKey.UserProfile.ID: user.id,
             JsonKey.UserProfile.LOGIN: user.login,
             JsonKey.UserProfile.PASSWORD: user.password,
-            JsonKey.UserProfile.COUNTRY_ID: user.country.id
+            JsonKey.UserProfile.COUNTRY: {
+                JsonKey.Countries.ID: user.country.id,
+                JsonKey.Countries.TITLE: user.country.title,
+                JsonKey.Countries.PREFIX: user.country.prefix
+            }
         }
 
         return JsonResponse(data, status=status.HTTP_201_CREATED)
