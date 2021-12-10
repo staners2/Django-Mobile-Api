@@ -28,3 +28,6 @@ class JsonKey(object):
         TYPE_ID = "type_id"
         DATE = "date"
         DESCRIPTION = "description"
+
+        USER = "user"
+        TYPE = "type"
