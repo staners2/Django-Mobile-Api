@@ -10,6 +10,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from django.forms.models import model_to_dict
 from django.core import serializers
+import json
 
 from .constant.ErrorMessages import ErrorMessages
 from .constant.JsonKey import JsonKey
@@ -104,3 +105,23 @@ def login(request):
         }
 
         return JsonResponse(data, status=status.HTTP_200_OK)
+
+@csrf_exempt
+@api_view(['GET'])
+def get_all_countries(request):
+    countries = Countries.objects.all()
+
+    data = []
+    for item in countries:
+        data.append({
+            JsonKey.Countries.ID: item.id,
+            JsonKey.Countries.TITLE: item.title,
+            JsonKey.Countries.PREFIX: item.prefix
+        })
+
+    result = json.dumps(data)
+    print(result)
+
+    return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
+
+

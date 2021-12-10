@@ -6,6 +6,7 @@ from django.urls import path, include
 urlpatterns = [
     path('api/auth/registration', views.registration, name='registration'),
     path('api/auth/login', views.login, name='login'),
+    path('api/countries', views.get_all_countries, name="get_all_countries"),
 ]
 
 # включаем возможность обработки картинок
