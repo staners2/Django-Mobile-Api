@@ -2,6 +2,8 @@
 class JsonKey(object):
     ERRORS = "errors"
 
+    COUNTRIES = "countries"
+
     class UserProfile(object):
         ID = "id"
         LOGIN = "login"
