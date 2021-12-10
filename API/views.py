@@ -86,7 +86,11 @@ def login(request):
             JsonKey.UserProfile.ID: user.id,
             JsonKey.UserProfile.LOGIN: user.login,
             JsonKey.UserProfile.PASSWORD: user.password,
-            JsonKey.UserProfile.COUNTRY_ID: user.country.id
+            JsonKey.UserProfile.COUNTRY: {
+                JsonKey.Countries.ID: user.country.id,
+                JsonKey.Countries.TITLE: user.country.title,
+                JsonKey.Countries.PREFIX: user.country.prefix
+            }
         }
 
         return JsonResponse(data, status=status.HTTP_200_OK)

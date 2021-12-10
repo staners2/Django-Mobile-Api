@@ -8,6 +8,8 @@ class JsonKey(object):
         PASSWORD = "password"
         COUNTRY_ID = "country_id"
 
+        COUNTRY = "country"
+
     class Countries(object):
         ID = "id"
         TITLE = "title"
