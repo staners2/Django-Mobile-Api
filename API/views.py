@@ -124,4 +124,18 @@ def get_all_countries(request):
 
     return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
 
+@csrf_exempt
+@api_view(['GET'])
+def get_country(request, id):
+    country = Countries.objects.get(id=id)
 
+
+    data = {
+        JsonKey.Countries.ID: country.id,
+        JsonKey.Countries.TITLE: country.title,
+        JsonKey.Countries.PREFIX: country.prefix
+    }
+
+    print(data)
+
+    return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
