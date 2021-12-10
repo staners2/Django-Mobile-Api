@@ -216,3 +216,23 @@ def show_histories(request, user_profile_id):
     print(result)
 
     return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
+
+@csrf_exempt
+@api_view(['DELETE'])
+def delete_histories(request, user_profile_id, history_id):
+    user = UserProfile.objects.get(id=user_profile_id)
+    errors = Error()
+
+    try:
+        history = Histories.objects.get(user=user, id = history_id)
+        print("NOT ERROR EXIST")
+    except Histories.DoesNotExist:
+        errors.append(ErrorMessages.HISTORY_NOT_FOUND)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
+
+    history.delete()
+
+    return HttpResponse(status=status.HTTP_200_OK)
+
+
+

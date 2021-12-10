@@ -9,3 +9,4 @@ class ErrorMessages(object):
     COUNTRIES_NOT_FOUND = "Страны с такими параметрами не найдено"
 
     HISTORIES_NOT_FOUND = "У данного пользователя отсутствует история"
+    HISTORY_NOT_FOUND = "Записи о данной истории больше не существует"
