@@ -20,9 +20,10 @@ class Types(models.Model):
     en_title = models.TextField(null=True)
 
 class Histories(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(UserProfile, null=True, on_delete=models.SET_NULL, db_constraint=False)
     type = models.ForeignKey(Types, null=True, on_delete=models.SET_NULL, db_constraint=False)
-    date = models.DateField()
+    date = models.DateTimeField()
     description = models.TextField(null=True)
 
 class Error():
