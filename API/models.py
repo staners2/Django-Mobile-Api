@@ -1,10 +1,16 @@
 from django.db import models
+from django.http import JsonResponse
+from rest_framework import status
+
+from API.constant.JsonKey import JsonKey
+
 
 class Countries(models.Model):
     title = models.TextField(null=True)
     prefix = models.TextField(null=True)
 
-class User(models.Model):
+class UserProfile(models.Model):
+    id = models.BigAutoField(primary_key=True)
     country = models.ForeignKey(Countries, null=True, on_delete=models.SET_NULL, db_constraint=False)
     login = models.CharField(max_length=30)
     password = models.CharField(max_length=30)
@@ -14,7 +20,16 @@ class Types(models.Model):
     en_title = models.TextField(null=True)
 
 class Histories(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, db_constraint=False)
+    user = models.ForeignKey(UserProfile, null=True, on_delete=models.SET_NULL, db_constraint=False)
     type = models.ForeignKey(Types, null=True, on_delete=models.SET_NULL, db_constraint=False)
     date = models.DateField()
     description = models.TextField(null=True)
+
+class Error():
+    messages = None
+
+    def __init__(self):
+        self.messages = []
+
+    def append(self, message):
+        self.messages.append(message)
