@@ -281,5 +281,42 @@ def get_random_fact(request, user_profile_id, type):
 
     return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
 
+@csrf_exempt
+@api_view(['GET'])
+def get_fact_by_type(request, user_profile_id, type, number):
+    errors = Error()
 
+    headers = {
+        "Content-Type": "application/json"
+    }
 
+    if (type == None or len(Types.objects.filter(en_title=type)) == 0):
+        errors.append(ErrorMessages.GET_RANDOM_TYPES_NOT_FOUND)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
+
+    user = UserProfile.objects.get(id=user_profile_id)
+
+    url=ApiUrl.GENERATE_URL_BY_NUMBER_AND_TYPE.format(number, type)
+
+    response = requests.get(headers=headers, url=url)
+    print(response.text)
+    obj = json.loads(response.text)
+
+    type = Types.objects.get(en_title=obj["type"])
+    fact = Fact(number=obj["number"], text=obj["text"], type=type)
+
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    history = Histories.objects.create(user=user, type=type, date=date, number=fact.number, description=fact.text)
+    history.save()
+
+    data = {
+        JsonKey.Fact.NUMBER: fact.number,
+        JsonKey.Fact.TEXT: fact.text,
+        JsonKey.Fact.TYPE: {
+            JsonKey.Types.ID: type.id,
+            JsonKey.Types.RU_TITLE: type.ru_title,
+            JsonKey.Types.EN_TITLE: type.en_title
+        }
+    }
+
+    return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
