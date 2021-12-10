@@ -7,3 +7,5 @@ class ErrorMessages(object):
     LOGIN_ERROR_401 = "Пользователя с такими данными не существует"
 
     COUNTRIES_NOT_FOUND = "Страны с такими параметрами не найдено"
+
+    HISTORIES_NOT_FOUND = "У данного пользователя отсутствует история"

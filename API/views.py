@@ -14,7 +14,7 @@ import json
 
 from .constant.ErrorMessages import ErrorMessages
 from .constant.JsonKey import JsonKey
-from .models import UserProfile, Error, Countries
+from .models import UserProfile, Error, Countries, Histories
 
 
 @csrf_exempt
@@ -175,3 +175,44 @@ def update_country(request, user_profile_id):
     }
 
     return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
+
+@csrf_exempt
+@api_view(['GET'])
+def show_histories(request, user_profile_id):
+    user = UserProfile.objects.get(id = user_profile_id)
+    histories = Histories.objects.filter(user = user)
+    errors = Error()
+
+    if len(histories) == 0:
+        errors.append(ErrorMessages.HISTORIES_NOT_FOUND)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_200_OK)
+
+    print(histories)
+    data = []
+
+    for item in histories:
+        data.append({
+        JsonKey.Histories.ID: item.id,
+        JsonKey.Histories.DATE: item.date,
+        JsonKey.Histories.DESCRIPTION: item.description,
+        JsonKey.Histories.USER: {
+            JsonKey.UserProfile.ID: item.user.id,
+            JsonKey.UserProfile.LOGIN: item.user.login,
+            JsonKey.UserProfile.PASSWORD: item.user.password,
+            JsonKey.UserProfile.COUNTRY: {
+                JsonKey.Countries.ID: item.user.country.id,
+                JsonKey.Countries.TITLE: item.user.country.title,
+                JsonKey.Countries.PREFIX: item.user.country.prefix
+            }
+        },
+        JsonKey.Histories.TYPE: {
+            JsonKey.Types.ID: item.type.id,
+            JsonKey.Types.RU_TITLE: item.type.ru_title,
+            JsonKey.Types.EN_TITLE: item.type.en_title
+        }
+    })
+
+    result = json.dumps(data)
+    print(result)
+
+    return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
