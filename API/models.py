@@ -6,6 +6,7 @@ from API.constant.JsonKey import JsonKey
 
 
 class Countries(models.Model):
+    id = models.BigAutoField(primary_key=True)
     title = models.TextField(null=True)
     prefix = models.TextField(null=True)
 
@@ -16,6 +17,7 @@ class UserProfile(models.Model):
     password = models.CharField(max_length=30)
 
 class Types(models.Model):
+    id = models.BigAutoField(primary_key=True)
     ru_title = models.TextField(null=True)
     en_title = models.TextField(null=True)
 
