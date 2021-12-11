@@ -13,6 +13,7 @@ from django.forms.models import model_to_dict
 from django.core import serializers
 import json
 
+from .Helpers import Helpers
 from .constant.ApiUrl import ApiUrl
 from .constant.ErrorMessages import ErrorMessages
 from .constant.JsonKey import JsonKey
@@ -110,14 +111,22 @@ def login(request):
 
 @csrf_exempt
 @api_view(['GET'])
-def get_all_countries(request):
+def get_all_countries(request, user_profile_id):
+    errors = Error()
+    if (user_profile_id == None):
+        errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = UserProfile.objects.get(id=user_profile_id)
+
     countries = Countries.objects.all()
 
     data = []
     for item in countries:
+        print("{} | {} | {}".format(Helpers.translate_language("en", user.country.prefix, item.title), user.country.prefix, item.title))
         data.append({
             JsonKey.Countries.ID: item.id,
-            JsonKey.Countries.TITLE: item.title,
+            JsonKey.Countries.TITLE: Helpers.translate_language("en", user.country.prefix, item.title),
             JsonKey.Countries.PREFIX: item.prefix
         })
 
@@ -126,20 +135,20 @@ def get_all_countries(request):
 
     return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
 
-@csrf_exempt
-@api_view(['GET'])
-def get_country(request, id):
-    country = Countries.objects.get(id=id)
-
-    data = {
-        JsonKey.Countries.ID: country.id,
-        JsonKey.Countries.TITLE: country.title,
-        JsonKey.Countries.PREFIX: country.prefix
-    }
-
-    print(data)
-
-    return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
+# @csrf_exempt
+# @api_view(['GET'])
+# def get_country(request, id):
+#     country = Countries.objects.get(id=id)
+#
+#     data = {
+#         JsonKey.Countries.ID: country.id,
+#         JsonKey.Countries.TITLE: country.title,
+#         JsonKey.Countries.PREFIX: country.prefix
+#     }
+#
+#     print(data)
+#
+#     return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
 
 @csrf_exempt
 @api_view(['PUT'])
@@ -171,7 +180,7 @@ def update_country(request, user_profile_id):
         JsonKey.UserProfile.PASSWORD: user.password,
         JsonKey.UserProfile.COUNTRY: {
             JsonKey.Countries.ID: user.country.id,
-            JsonKey.Countries.TITLE: user.country.title,
+            JsonKey.Countries.TITLE: Helpers.translate_language("en", country.prefix, user.country.title),
             JsonKey.Countries.PREFIX: user.country.prefix
         }
     }
@@ -192,24 +201,25 @@ def show_histories(request, user_profile_id):
     print(histories)
     data = []
 
+
     for item in histories:
         data.append({
         JsonKey.Histories.ID: item.id,
-        JsonKey.Histories.DATE: item.date,
-        JsonKey.Histories.DESCRIPTION: item.description,
+        JsonKey.Histories.DATE: item.date.strftime("%Y-%m-%d %H:%M:%S"),
+        JsonKey.Histories.DESCRIPTION: Helpers.translate_language("en", user.country.prefix, item.description),
         JsonKey.Histories.USER: {
             JsonKey.UserProfile.ID: item.user.id,
             JsonKey.UserProfile.LOGIN: item.user.login,
             JsonKey.UserProfile.PASSWORD: item.user.password,
             JsonKey.UserProfile.COUNTRY: {
                 JsonKey.Countries.ID: item.user.country.id,
-                JsonKey.Countries.TITLE: item.user.country.title,
+                JsonKey.Countries.TITLE: Helpers.translate_language("en", user.country.prefix, item.user.country.title),
                 JsonKey.Countries.PREFIX: item.user.country.prefix
             }
         },
         JsonKey.Histories.TYPE: {
             JsonKey.Types.ID: item.type.id,
-            JsonKey.Types.RU_TITLE: item.type.ru_title,
+            JsonKey.Types.RU_TITLE: Helpers.translate_language("ru", user.country.prefix, item.type.ru_title),
             JsonKey.Types.EN_TITLE: item.type.en_title
         }
     })
@@ -270,11 +280,11 @@ def get_random_fact(request, user_profile_id, type):
     history.save()
 
     data = {
-        JsonKey.Fact.NUMBER: fact.number,
-        JsonKey.Fact.TEXT: fact.text,
+        JsonKey.Fact.NUMBER: history.number,
+        JsonKey.Fact.TEXT: Helpers.translate_language("en", user.country.prefix, history.description),
         JsonKey.Fact.TYPE: {
             JsonKey.Types.ID: type.id,
-            JsonKey.Types.RU_TITLE: type.ru_title,
+            JsonKey.Types.RU_TITLE: Helpers.translate_language("ru", user.country.prefix, type.ru_title),
             JsonKey.Types.EN_TITLE: type.en_title
         }
     }
@@ -311,10 +321,10 @@ def get_fact_by_type(request, user_profile_id, type, number):
 
     data = {
         JsonKey.Fact.NUMBER: fact.number,
-        JsonKey.Fact.TEXT: fact.text,
+        JsonKey.Fact.TEXT: Helpers.translate_language("en", user.country.prefix, history.description),
         JsonKey.Fact.TYPE: {
             JsonKey.Types.ID: type.id,
-            JsonKey.Types.RU_TITLE: type.ru_title,
+            JsonKey.Types.RU_TITLE: Helpers.translate_language("ru", user.country.prefix, type.ru_title),
             JsonKey.Types.EN_TITLE: type.en_title
         }
     }
