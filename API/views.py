@@ -111,27 +111,20 @@ def login(request):
 
 @csrf_exempt
 @api_view(['GET'])
-def get_all_countries(request, user_profile_id):
+def get_all_countries(request):
     errors = Error()
-    if (user_profile_id == None):
-        errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
-        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_400_BAD_REQUEST)
-
-    user = UserProfile.objects.get(id=user_profile_id)
 
     countries = Countries.objects.all()
 
     data = []
     for item in countries:
-        print("{} | {} | {}".format(Helpers.translate_language("en", user.country.prefix, item.title), user.country.prefix, item.title))
         data.append({
             JsonKey.Countries.ID: item.id,
-            JsonKey.Countries.TITLE: Helpers.translate_language("en", user.country.prefix, item.title),
+            JsonKey.Countries.TITLE: item.title,
             JsonKey.Countries.PREFIX: item.prefix
         })
 
     result = json.dumps(data)
-    print(result)
 
     return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
 
@@ -152,7 +145,7 @@ def get_all_countries(request, user_profile_id):
 
 @csrf_exempt
 @api_view(['PUT'])
-def update_country(request, user_profile_id):
+def update_country(request, userprofile_id):
     params = JSONParser().parse(request)
     print(params)
     country_id = params.get(JsonKey.Countries.ID)
@@ -170,7 +163,7 @@ def update_country(request, user_profile_id):
         return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
 
 
-    user = UserProfile.objects.get(id=user_profile_id)
+    user = UserProfile.objects.get(id=userprofile_id)
     user.country = country
     user.save()
 
@@ -189,8 +182,8 @@ def update_country(request, user_profile_id):
 
 @csrf_exempt
 @api_view(['GET'])
-def show_histories(request, user_profile_id):
-    user = UserProfile.objects.get(id = user_profile_id)
+def show_histories(request, userprofile_id):
+    user = UserProfile.objects.get(id = userprofile_id)
     histories = Histories.objects.filter(user = user)
     errors = Error()
 
@@ -231,8 +224,8 @@ def show_histories(request, user_profile_id):
 
 @csrf_exempt
 @api_view(['DELETE'])
-def delete_histories(request, user_profile_id, history_id):
-    user = UserProfile.objects.get(id=user_profile_id)
+def delete_histories(request, userprofile_id, history_id):
+    user = UserProfile.objects.get(id=userprofile_id)
     errors = Error()
 
     try:
@@ -248,8 +241,12 @@ def delete_histories(request, user_profile_id, history_id):
 
 @csrf_exempt
 @api_view(['GET'])
-def get_random_fact(request, user_profile_id, type):
+def get_random_fact(request, type):
     errors = Error()
+
+    params = JSONParser().parse(request)
+
+    userprofile_id = params.get("userprofile_id")
 
     headers = {
         "Content-Type": "application/json"
@@ -259,7 +256,11 @@ def get_random_fact(request, user_profile_id, type):
         errors.append(ErrorMessages.GET_RANDOM_TYPES_NOT_FOUND)
         return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
 
-    user = UserProfile.objects.get(id=user_profile_id)
+    if (userprofile_id == None):
+        errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
+        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
+
+    user = UserProfile.objects.get(id=userprofile_id)
 
     urlList = {
         'trivia': ApiUrl.RANDOM_TRIVIA,
@@ -293,8 +294,12 @@ def get_random_fact(request, user_profile_id, type):
 
 @csrf_exempt
 @api_view(['GET'])
-def get_fact_by_type(request, user_profile_id, type, number):
+def get_fact_by_type(request, type, number):
     errors = Error()
+
+    params = JSONParser().parse(request)
+
+    userprofile_id = params.get("userprofile_id")
 
     headers = {
         "Content-Type": "application/json"
@@ -304,7 +309,7 @@ def get_fact_by_type(request, user_profile_id, type, number):
         errors.append(ErrorMessages.GET_RANDOM_TYPES_NOT_FOUND)
         return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_404_NOT_FOUND)
 
-    user = UserProfile.objects.get(id=user_profile_id)
+    user = UserProfile.objects.get(id=userprofile_id)
 
     url=ApiUrl.GENERATE_URL_BY_NUMBER_AND_TYPE.format(number, type)
 
