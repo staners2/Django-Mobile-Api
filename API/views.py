@@ -1,4 +1,3 @@
-
 import requests
 import datetime
 from django.shortcuts import render
@@ -282,7 +281,7 @@ def get_random_fact(request, type):
 
     data = {
         JsonKey.Fact.NUMBER: history.number,
-        JsonKey.Fact.TEXT: Helpers.translate_language("en", user.country.prefix, history.description),
+        JsonKey.Fact.DESCRIPTION: Helpers.translate_language("en", user.country.prefix, history.description),
         JsonKey.Fact.TYPE: {
             JsonKey.Types.ID: type.id,
             JsonKey.Types.RU_TITLE: Helpers.translate_language("ru", user.country.prefix, type.ru_title),
@@ -326,7 +325,7 @@ def get_fact_by_type(request, type, number):
 
     data = {
         JsonKey.Fact.NUMBER: fact.number,
-        JsonKey.Fact.TEXT: Helpers.translate_language("en", user.country.prefix, history.description),
+        JsonKey.Fact.DESCRIPTION: Helpers.translate_language("en", user.country.prefix, history.description),
         JsonKey.Fact.TYPE: {
             JsonKey.Types.ID: type.id,
             JsonKey.Types.RU_TITLE: Helpers.translate_language("ru", user.country.prefix, type.ru_title),

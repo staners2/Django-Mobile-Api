@@ -34,5 +34,5 @@ class JsonKey(object):
 
     class Fact(object):
         NUMBER = "number"
-        TEXT = "text"
+        DESCRIPTION = "description"
         TYPE = "type"
