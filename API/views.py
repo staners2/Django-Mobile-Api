@@ -131,12 +131,15 @@ def get_all_countries(request):
 
     return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
 
+<<<<<<< Updated upstream
 
 class CountriesViewSet(viewsets.ModelViewSet):
     queryset = Countries.objects.all()
     serializer_class = CountriesSerializer
 
 
+=======
+>>>>>>> Stashed changes
 @csrf_exempt
 @api_view(['GET'])
 def get_all_types(request):
