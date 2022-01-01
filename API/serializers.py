@@ -1,13 +1,15 @@
 from rest_framework import serializers
 from .models import UserProfile, Error, Countries, Histories, Types, Fact
 
-class CountriesSerializer (serializers.HyperlinkedModelSerializer):
+class CountriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Countries
-        fields = ("id", "title", "prefix")
+        depth = 1
+        fields = "__all__"
 
 
-class RegisterSerializer (serializers.HyperlinkedModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ("id", "country", "login", "password")
+        depth = 1
+        fields = "__all__"
