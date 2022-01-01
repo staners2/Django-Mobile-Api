@@ -1,5 +1,5 @@
 import requests
-import datetime
+from datetime import datetime
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from django.http import HttpResponse, JsonResponse
@@ -227,23 +227,19 @@ def get_random_fact(request, type):
     obj = json.loads(response.text)
 
     type = Types.objects.get(en_title=obj["type"])
-    fact = Fact(number=obj["number"], text=obj["text"], type=type)
+    number = obj["number"]
+    description = obj["text"]
+    date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    history = Histories.objects.create(user=user, type=type, date=date, number=fact.number, description=fact.text)
+    fact = Fact.objects.create(type=type, number=number, description=description, date=date)
+    fact.save()
+
+    history = Histories.objects.create(user=user, fact=fact)
     history.save()
 
-    data = {
-        JsonKey.Fact.NUMBER: history.number,
-        JsonKey.Fact.DESCRIPTION: Helpers.translate_language("en", user.country.prefix, history.description),
-        JsonKey.Fact.TYPE: {
-            JsonKey.Types.ID: type.id,
-            JsonKey.Types.TITLE: Helpers.translate_language("en", user.country.prefix, type.en_title),
-            JsonKey.Types.EN_TITLE: type.en_title
-        }
-    }
+    serializer = FactsSerializer(fact)
 
-    return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
+    return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
 @csrf_exempt
 @api_view(['GET'])
@@ -273,7 +269,7 @@ def get_fact_by_type(request, type, number):
     type = Types.objects.get(en_title=obj["type"])
     fact = Fact(number=obj["number"], text=obj["text"], type=type)
 
-    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     history = Histories.objects.create(user=user, type=type, date=date, number=fact.number, description=fact.text)
     history.save()
 
