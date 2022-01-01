@@ -23,13 +23,13 @@ from .models import UserProfile, Error, Countries, Histories, Types, Fact
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def registration(request):
+    errors = Error()
     params = request.data
     print(params)
+
     login = params.get('login')
     password = params.get('password')
     country_id = params.get('country_id')
-
-    errors = Error()
 
     if request.method == 'GET':
         print('GET')
@@ -65,13 +65,13 @@ def registration(request):
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
+    errors = Error()
     params = request.data
     print(params)
+
     login = params.get('login')
     password = params.get('password')
     country_id = params.get("country_id")
-    errors = Error()
-
 
     if request.method == 'POST':
         print("POST")
@@ -106,10 +106,11 @@ def get_all_countries(request):
 @csrf_exempt
 @api_view(['GET'])
 def get_all_types(request):
+    errors = Error()
     params = request.data
     print(params)
+
     userprofile_id = params.get(JsonKey.USERPROFILE_ID)
-    errors = Error()
 
     if (userprofile_id == None):
         errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
@@ -139,10 +140,11 @@ def get_all_types(request):
 @csrf_exempt
 @api_view(['PUT'])
 def update_country(request, userprofile_id):
+    errors = Error()
     params = request.data
     print(params)
+
     country_id = params.get(JsonKey.Countries.ID)
-    errors = Error()
 
     if (country_id == None):
         errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
@@ -167,9 +169,10 @@ def update_country(request, userprofile_id):
 @csrf_exempt
 @api_view(['GET'])
 def show_histories(request, userprofile_id):
+    errors = Error()
+
     user = UserProfile.objects.get(id = userprofile_id)
     histories = Histories.objects.filter(user = user)
-    errors = Error()
 
     if len(histories) == 0:
         errors.append(ErrorMessages.HISTORIES_NOT_FOUND)
@@ -183,8 +186,8 @@ def show_histories(request, userprofile_id):
 @csrf_exempt
 @api_view(['DELETE'])
 def delete_histories(request, userprofile_id, history_id):
-    user = UserProfile.objects.get(id=userprofile_id)
     errors = Error()
+    user = UserProfile.objects.get(id=userprofile_id)
 
     try:
         history = Histories.objects.get(user=user, id = history_id)
@@ -201,7 +204,6 @@ def delete_histories(request, userprofile_id, history_id):
 @api_view(['GET'])
 def get_random_fact(request, type):
     errors = Error()
-
     params = request.data
     print(params)
 
@@ -224,7 +226,6 @@ def get_random_fact(request, type):
     urlList = {
         'trivia': ApiUrl.RANDOM_TRIVIA,
         'year': ApiUrl.RANDOM_YEAR,
-        'date': ApiUrl.RANDOM_DATE,
         'math': ApiUrl.RANDOM_MATH,
     }
 
@@ -251,7 +252,6 @@ def get_random_fact(request, type):
 @api_view(['GET'])
 def get_fact_by_type(request, type, number):
     errors = Error()
-
     params = request.data
     print(params)
 
