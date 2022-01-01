@@ -7,6 +7,11 @@ class CountriesSerializer(serializers.ModelSerializer):
         depth = 1
         fields = "__all__"
 
+class TypesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Types
+        depth = 1
+        fields = "__all__"
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
