@@ -13,6 +13,12 @@ class TypesSerializer(serializers.ModelSerializer):
         depth = 1
         fields = "__all__"
 
+class HistoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Histories
+        depth = 1
+        fields = "__all__"
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
