@@ -1,8 +1,8 @@
 
 class JsonKey(object):
     ERRORS = "errors"
-
     COUNTRIES = "countries"
+    USERPROFILE_ID = "userprofile_id"
 
     class UserProfile(object):
         ID = "id"
@@ -19,7 +19,7 @@ class JsonKey(object):
 
     class Types(object):
         ID = "id"
-        RU_TITLE = "ru_title"
+        TITLE = "title"
         EN_TITLE = "en_title"
 
     class Histories(object):
