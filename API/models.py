@@ -18,7 +18,7 @@ class UserProfile(models.Model):
 
 class Types(models.Model):
     id = models.BigAutoField(primary_key=True)
-    ru_title = models.TextField(null=True)
+    title = models.TextField(null=True)
     en_title = models.TextField(null=True)
 
 class Histories(models.Model):
