@@ -170,35 +170,10 @@ def show_histories(request, userprofile_id):
         errors.append(ErrorMessages.HISTORIES_NOT_FOUND)
         return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_200_OK)
 
-    print(histories)
-    data = []
+    # JsonKey.Histories.DATE: item.date.strftime("%Y-%m-%d %H:%M:%S"),
+    serializer = HistoriesSerializer(histories, many=True)
 
-    for item in histories:
-        data.append({
-        JsonKey.Histories.ID: item.id,
-        JsonKey.Histories.DATE: item.date.strftime("%Y-%m-%d %H:%M:%S"),
-        JsonKey.Histories.DESCRIPTION: Helpers.translate_language("en", user.country.prefix, item.description),
-        JsonKey.Histories.USER: {
-            JsonKey.UserProfile.ID: item.user.id,
-            JsonKey.UserProfile.LOGIN: item.user.login,
-            JsonKey.UserProfile.PASSWORD: item.user.password,
-            JsonKey.UserProfile.COUNTRY: {
-                JsonKey.Countries.ID: item.user.country.id,
-                JsonKey.Countries.TITLE: Helpers.translate_language("en", user.country.prefix, item.user.country.title),
-                JsonKey.Countries.PREFIX: item.user.country.prefix
-            }
-        },
-        JsonKey.Histories.TYPE: {
-            JsonKey.Types.ID: item.type.id,
-            JsonKey.Types.TITLE: Helpers.translate_language("en", user.country.prefix, item.type.en_title),
-            JsonKey.Types.EN_TITLE: item.type.en_title
-        }
-    })
-
-    result = json.dumps(data)
-    print(result)
-
-    return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
+    return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
 @csrf_exempt
 @api_view(['DELETE'])
