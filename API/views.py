@@ -155,18 +155,9 @@ def update_country(request, userprofile_id):
     user.country = country
     user.save()
 
-    data = {
-        JsonKey.UserProfile.ID: user.id,
-        JsonKey.UserProfile.LOGIN: user.login,
-        JsonKey.UserProfile.PASSWORD: user.password,
-        JsonKey.UserProfile.COUNTRY: {
-            JsonKey.Countries.ID: user.country.id,
-            JsonKey.Countries.TITLE: Helpers.translate_language("en", country.prefix, user.country.title),
-            JsonKey.Countries.PREFIX: user.country.prefix
-        }
-    }
+    serializer = UserProfileSerializer(user)
 
-    return JsonResponse(data, status=status.HTTP_200_OK, safe=False)
+    return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
 @csrf_exempt
 @api_view(['GET'])
