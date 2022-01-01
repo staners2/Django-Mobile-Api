@@ -2,8 +2,14 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+from rest_framework import routers
+router = routers.DefaultRouter()
+router.register(r'Countries', views.CountriesViewSet)
+router.register(r'Profiles', views.RegisterViewSet)
+
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('api/auth/registration', views.registration, name='registration'),
     path('api/auth/login', views.login, name='login'),
     path('api/countries', views.get_all_countries, name="get_all_countries"),
