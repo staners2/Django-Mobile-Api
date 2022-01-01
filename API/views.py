@@ -112,17 +112,9 @@ def get_all_types(request):
 
     types = Types.objects.all()
 
-    data = []
-    for item in types:
-        data.append({
-            JsonKey.Types.ID: item.id,
-            JsonKey.Types.TITLE: item.title,
-            JsonKey.Types.EN_TITLE: item.en_title
-        })
+    serializer = TypesSerializer(types, many=True)
 
-    result = json.dumps(data)
-
-    return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
+    return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
 # @csrf_exempt
 # @api_view(['GET'])
