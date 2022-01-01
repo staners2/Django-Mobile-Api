@@ -86,18 +86,9 @@ def login(request):
             errors.append(ErrorMessages.LOGIN_ERROR_401)
             return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_401_UNAUTHORIZED)
 
-        data = {
-            JsonKey.UserProfile.ID: user.id,
-            JsonKey.UserProfile.LOGIN: user.login,
-            JsonKey.UserProfile.PASSWORD: user.password,
-            JsonKey.UserProfile.COUNTRY: {
-                JsonKey.Countries.ID: user.country.id,
-                JsonKey.Countries.TITLE: user.country.title,
-                JsonKey.Countries.PREFIX: user.country.prefix
-            }
-        }
+        serializer = UserProfileSerializer(user)
 
-        return JsonResponse(data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
 @csrf_exempt
 @api_view(['GET'])
