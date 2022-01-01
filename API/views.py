@@ -95,17 +95,9 @@ def login(request):
 def get_all_countries(request):
     countries = Countries.objects.all()
 
-    data = []
-    for item in countries:
-        data.append({
-            JsonKey.Countries.ID: item.id,
-            JsonKey.Countries.TITLE: item.title,
-            JsonKey.Countries.PREFIX: item.prefix
-        })
+    serializer = CountriesSerializer(countries, many=True)
 
-    result = json.dumps(data)
-
-    return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
+    return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
 @csrf_exempt
 @api_view(['GET'])
