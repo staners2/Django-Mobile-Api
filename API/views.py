@@ -69,6 +69,7 @@ def login(request):
     print(params)
     login = params.get('login')
     password = params.get('password')
+    country_id = params.get("country_id")
     errors = Error()
 
 
@@ -86,6 +87,9 @@ def login(request):
             errors.append(ErrorMessages.LOGIN_ERROR_401)
             return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_401_UNAUTHORIZED)
 
+        country = Countries.objects.get(id=country_id)
+        user.country = country
+        user.save()
         serializer = UserProfileSerializer(user)
 
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
