@@ -71,12 +71,6 @@ def registration(request):
 
         return JsonResponse(data, status=status.HTTP_201_CREATED)
 
-
-class RegisterViewSet(viewsets.ModelViewSet):
-    queryset = UserProfile.objects.all()
-    serializer_class = RegisterSerializer
-
-
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
@@ -131,15 +125,6 @@ def get_all_countries(request):
 
     return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
 
-<<<<<<< Updated upstream
-
-class CountriesViewSet(viewsets.ModelViewSet):
-    queryset = Countries.objects.all()
-    serializer_class = CountriesSerializer
-
-
-=======
->>>>>>> Stashed changes
 @csrf_exempt
 @api_view(['GET'])
 def get_all_types(request):
