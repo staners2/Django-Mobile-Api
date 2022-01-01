@@ -23,7 +23,7 @@ from .models import UserProfile, Error, Countries, Histories, Types, Fact
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def registration(request):
-    params = JSONParser().parse(request)
+    params = request.data
     print(params)
     login = params.get('login')
     password = params.get('password')
@@ -65,7 +65,7 @@ def registration(request):
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
-    params = JSONParser().parse(request)
+    params = request.data
     print(params)
     login = params.get('login')
     password = params.get('password')
@@ -106,7 +106,8 @@ def get_all_countries(request):
 @csrf_exempt
 @api_view(['GET'])
 def get_all_types(request):
-    params = JSONParser().parse(request)
+    params = request.data
+    print(params)
     userprofile_id = params.get(JsonKey.USERPROFILE_ID)
     errors = Error()
 
@@ -138,7 +139,7 @@ def get_all_types(request):
 @csrf_exempt
 @api_view(['PUT'])
 def update_country(request, userprofile_id):
-    params = JSONParser().parse(request)
+    params = request.data
     print(params)
     country_id = params.get(JsonKey.Countries.ID)
     errors = Error()
@@ -201,7 +202,8 @@ def delete_histories(request, userprofile_id, history_id):
 def get_random_fact(request, type):
     errors = Error()
 
-    params = JSONParser().parse(request)
+    params = request.data
+    print(params)
 
     userprofile_id = params.get(JsonKey.USERPROFILE_ID)
 
@@ -250,7 +252,8 @@ def get_random_fact(request, type):
 def get_fact_by_type(request, type, number):
     errors = Error()
 
-    params = JSONParser().parse(request)
+    params = request.data
+    print(params)
 
     userprofile_id = params.get(JsonKey.USERPROFILE_ID)
 
