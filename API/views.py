@@ -58,18 +58,9 @@ def registration(request):
         user = UserProfile.objects.create(login=login, password=password, country=country)
         user.save()
 
-        data = {
-            JsonKey.UserProfile.ID: user.id,
-            JsonKey.UserProfile.LOGIN: user.login,
-            JsonKey.UserProfile.PASSWORD: user.password,
-            JsonKey.UserProfile.COUNTRY: {
-                JsonKey.Countries.ID: user.country.id,
-                JsonKey.Countries.TITLE: user.country.title,
-                JsonKey.Countries.PREFIX: user.country.prefix
-            }
-        }
+        serializer = UserProfileSerializer(user)
 
-        return JsonResponse(data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 @csrf_exempt
 @api_view(['POST'])
