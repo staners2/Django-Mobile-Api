@@ -19,6 +19,12 @@ class HistoriesSerializer(serializers.ModelSerializer):
         depth = 1
         fields = "__all__"
 
+class FactsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fact
+        depth = 1
+        fields = "__all__"
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
