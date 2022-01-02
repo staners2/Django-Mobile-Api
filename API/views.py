@@ -110,12 +110,6 @@ def get_all_types(request):
     params = request.data
     print(params)
 
-    userprofile_id = params.get(JsonKey.USERPROFILE_ID)
-
-    if (userprofile_id == None):
-        errors.append(ErrorMessages.NOT_FOUND_REQUIRED_PARAMS)
-        return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_400_BAD_REQUEST)
-
     types = Types.objects.all()
 
     serializer = TypesSerializer(types, many=True)
