@@ -195,13 +195,13 @@ def delete_histories(request, userprofile_id, history_id):
     return HttpResponse(status=status.HTTP_200_OK)
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(['POST'])
 def get_random_fact(request, type):
     errors = Error()
     params = request.data
     print(params)
 
-    userprofile_id = params.get(JsonKey.USERPROFILE_ID)
+    userprofile_id = params.get(JsonKey.USERPROFILE_ID)[0]
 
     headers = {
         "Content-Type": "application/json"
@@ -243,13 +243,13 @@ def get_random_fact(request, type):
     return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(['POST'])
 def get_fact_by_type(request, type, number):
     errors = Error()
     params = request.data
     print(params)
 
-    userprofile_id = params.get(JsonKey.USERPROFILE_ID)
+    userprofile_id = params.get(JsonKey.USERPROFILE_ID)[0]
 
     headers = {
         "Content-Type": "application/json"
