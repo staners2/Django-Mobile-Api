@@ -166,7 +166,9 @@ def show_histories(request, userprofile_id):
         errors.append(ErrorMessages.HISTORIES_NOT_FOUND)
         return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_200_OK)
 
-    # JsonKey.Histories.DATE: item.date.strftime("%Y-%m-%d %H:%M:%S"),
+    for item in histories:
+        item.fact.type = Helpers.translate_language(user.country.prefix, item.fact.type)
+        item.fact.description = Helpers.translate_language(user.country.prefix, item.fact.description)
     serializer = HistoriesSerializer(histories, many=True)
 
     return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
@@ -232,6 +234,9 @@ def get_random_fact(request, type):
     history = Histories.objects.create(user=user, fact=fact)
     history.save()
 
+    history.fact.type = Helpers.translate_language(user.country.prefix, history.fact.type)
+    history.fact.description = Helpers.translate_language(user.country.prefix, history.fact.description)
+
     serializer = FactsSerializer(fact)
 
     return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
@@ -271,6 +276,9 @@ def get_fact_by_type(request, type, number):
 
     history = Histories.objects.create(user=user, fact=fact)
     history.save()
+
+    history.fact.type = Helpers.translate_language(user.country.prefix, history.fact.type)
+    history.fact.description = Helpers.translate_language(user.country.prefix, history.fact.description)
 
     serializer = FactsSerializer(fact)
 
