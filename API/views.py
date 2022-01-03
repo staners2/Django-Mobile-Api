@@ -31,13 +31,7 @@ def registration(request):
     password = params.get('password')
     country_id = params.get('country_id')
 
-    if request.method == 'GET':
-        print('GET')
-        users = serializers.serialize('json', UserProfile.objects.all())  # UserProfile.objects.all()
-        print(users)
-        return JsonResponse(users, status=status.HTTP_200_OK, safe=False)
-
-    elif request.method == 'POST':
+    if request.method == 'POST':
         print("POST")
 
         if (login == None or password == None or country_id == None):
@@ -201,7 +195,7 @@ def get_random_fact(request, type):
     params = request.data
     print(params)
 
-    userprofile_id = params.get(JsonKey.USERPROFILE_ID)[0]
+    userprofile_id = params.get(JsonKey.USERPROFILE_ID)
 
     headers = {
         "Content-Type": "application/json"
@@ -249,7 +243,7 @@ def get_fact_by_type(request, type, number):
     params = request.data
     print(params)
 
-    userprofile_id = params.get(JsonKey.USERPROFILE_ID)[0]
+    userprofile_id = params.get(JsonKey.USERPROFILE_ID)
 
     headers = {
         "Content-Type": "application/json"
