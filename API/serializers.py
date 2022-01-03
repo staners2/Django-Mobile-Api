@@ -16,7 +16,7 @@ class TypesSerializer(serializers.ModelSerializer):
 class HistoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Histories
-        depth = 1
+        depth = 2
         fields = "__all__"
 
 class FactsSerializer(serializers.ModelSerializer):
