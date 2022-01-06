@@ -6,4 +6,7 @@ class Helpers(object):
         translator = Translator(from_lnag=from_lnaguage, to_lang=to_language)
         if (status_translate == False):
             return source
-        return translator.translate(source)
+        translate = translator.translate(source)
+        print("source = {0}".format(source))
+        print("translate = {0}".format(translate))
+        return translate
