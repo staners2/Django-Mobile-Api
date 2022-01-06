@@ -167,7 +167,7 @@ def show_histories(request, userprofile_id):
         return JsonResponse({JsonKey.ERRORS: errors.messages}, status=status.HTTP_200_OK)
 
     for item in histories:
-        item.fact.type = Helpers.translate_language(user.country.prefix, item.fact.type)
+        item.fact.type.title = Helpers.translate_language(user.country.prefix, item.fact.type.title)
         item.fact.description = Helpers.translate_language(user.country.prefix, item.fact.description)
     serializer = HistoriesSerializer(histories, many=True)
 
@@ -234,7 +234,7 @@ def get_random_fact(request, type):
     history = Histories.objects.create(user=user, fact=fact)
     history.save()
 
-    history.fact.type = Helpers.translate_language(user.country.prefix, history.fact.type)
+    history.fact.type.title = Helpers.translate_language(user.country.prefix, history.fact.type.title)
     history.fact.description = Helpers.translate_language(user.country.prefix, history.fact.description)
 
     serializer = FactsSerializer(fact)
@@ -277,7 +277,7 @@ def get_fact_by_type(request, type, number):
     history = Histories.objects.create(user=user, fact=fact)
     history.save()
 
-    history.fact.type = Helpers.translate_language(user.country.prefix, history.fact.type)
+    history.fact.type.title = Helpers.translate_language(user.country.prefix, history.fact.type.title)
     history.fact.description = Helpers.translate_language(user.country.prefix, history.fact.description)
 
     serializer = FactsSerializer(fact)
